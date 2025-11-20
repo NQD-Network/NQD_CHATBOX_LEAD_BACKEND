@@ -7,6 +7,7 @@ const connectDB = require("./src/config/db");
 // Import routes
 const sessionRoutes = require("./src/routes/sessionRoutes");
 const leadRoutes = require("./src/routes/leadRoutes");
+const addTenantRoutes = require("./src/routes/addTenantRoutes");
 
 const app = express();
 
@@ -20,6 +21,7 @@ connectDB();
 // Routes
 app.use("/api/session", sessionRoutes);
 app.use("/api/leads", leadRoutes);
+app.use("/api/kratos/add-tenant", addTenantRoutes);
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
