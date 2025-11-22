@@ -63,6 +63,19 @@ const deleteSession = async (id) => {
   return await Lead.findByIdAndDelete(id);
 };
 
+const renameSession = async (id, newName) => {
+  return await Lead.findByIdAndUpdate(
+    id,
+    { 
+      $set: { 
+        firstMessage: newName.trim(),
+        updatedAt: Date.now() 
+      } 
+    },
+    { new: true }
+  );
+};
+
 
 module.exports = {
   createSession,
@@ -71,5 +84,6 @@ module.exports = {
   getUserSessions,
   getSessionById,
   linkSessionToUser,
-  deleteSession
+  deleteSession,
+  renameSession
 };

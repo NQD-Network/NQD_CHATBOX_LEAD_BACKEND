@@ -1,11 +1,12 @@
 // controllers/sessionController.js
-const { 
-  createSession, 
-  updateSession, 
+const {
+  createSession,
+  updateSession,
   getUserSessions,
   getSessionById,
   linkSessionToUser,
-  deleteSession
+  deleteSession,
+  renameSession
 } = require("../services/leadService");
 
 exports.createSession = async (req, res) => {
@@ -23,11 +24,11 @@ exports.updateSession = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedLead = await updateSession(id, req.body);
-    
+
     if (!updatedLead) {
       return res.status(404).json({ success: false, error: "Session not found" });
     }
-    
+
     res.json({ success: true, session: updatedLead });
   } catch (err) {
     console.error("Session update error:", err);
@@ -38,11 +39,11 @@ exports.updateSession = async (req, res) => {
 exports.getUserSessions = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     if (!userId) {
       return res.status(400).json({ success: false, error: "userId is required" });
     }
-    
+
     const sessions = await getUserSessions(userId);
     res.json({ success: true, sessions });
   } catch (err) {
@@ -55,11 +56,11 @@ exports.getSessionById = async (req, res) => {
   try {
     const { id } = req.params;
     const session = await getSessionById(id);
-    
+
     if (!session) {
       return res.status(404).json({ success: false, error: "Session not found" });
     }
-    
+
     res.json({ success: true, session });
   } catch (err) {
     console.error("Get session error:", err);
@@ -70,20 +71,20 @@ exports.getSessionById = async (req, res) => {
 exports.linkSessionToUser = async (req, res) => {
   try {
     const { sessionId, userId } = req.body;
-    
+
     if (!sessionId || !userId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: "sessionId and userId are required" 
+      return res.status(400).json({
+        success: false,
+        error: "sessionId and userId are required"
       });
     }
-    
+
     const updatedSession = await linkSessionToUser(sessionId, userId);
-    
+
     if (!updatedSession) {
       return res.status(404).json({ success: false, error: "Session not found" });
     }
-    
+
     res.json({ success: true, session: updatedSession });
   } catch (err) {
     console.error("Link session error:", err);
@@ -106,5 +107,40 @@ exports.deleteSession = async (req, res) => {
   } catch (err) {
     console.error("Delete session error:", err);
     res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+exports.renameSession = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newName } = req.body;
+
+    if (!newName || !newName.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: "New name is required"
+      });
+    }
+
+    const updatedSession = await renameSession(id, newName);
+
+    if (!updatedSession) {
+      return res.status(404).json({
+        success: false,
+        error: "Session not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      session: updatedSession,
+      message: "Session renamed successfully"
+    });
+  } catch (err) {
+    console.error("Rename session error:", err);
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
   }
 };

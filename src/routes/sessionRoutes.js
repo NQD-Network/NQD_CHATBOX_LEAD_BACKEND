@@ -7,7 +7,8 @@ const {
   getUserSessions,
   getSessionById,
   linkSessionToUser,
-  deleteSession
+  deleteSession,
+  renameSession
 } = require("../controllers/sessionController");
 
 router.post("/", createSession);
@@ -16,5 +17,6 @@ router.get("/user/:userId", getUserSessions);
 router.get("/:id", getSessionById);
 router.post("/link-user", linkSessionToUser);
 router.delete("/:id", deleteSession);
+router.patch("/:id/rename", renameSession);
 
 module.exports = router;
